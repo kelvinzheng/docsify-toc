@@ -61,8 +61,15 @@ var createList = function(wrapper, count) {
 
 //------------------------------------------------------------------------
 
-var getHeaders = function(selector) {
-  var headings2 = document.querySelectorAll(selector);
+var getHeaders = function(scope, headings) {
+  // 1. query scope node first
+  // 2. query headings from scope node
+  var headings2 = [];
+  var scopeEl = document.querySelectorAll(scope);
+  if (scopeEl && scopeEl.length > 0) {
+    headings2 = scopeEl[0].querySelectorAll(headings);
+  }
+
   var ret = [];
 
   [].forEach.call(headings2, function(heading) {
@@ -89,9 +96,8 @@ var jumpBack = function(currentWrapper, offset) {
 var buildTOC = function(options) {
   var ret = document.createElement('ul');
   var wrapper = ret;
-  var lastLi = null;
-  var selector = options.scope + ' ' + options.headings
-  var headers = getHeaders(selector).filter(h => h.id);
+  var lastLi = null; 
+  var headers = getHeaders(options.scope, options.headings).filter(h => h.id);
 
   headers.reduce(function(prev, curr, index) {
     var currentLevel = getLevel(curr.tagName);
